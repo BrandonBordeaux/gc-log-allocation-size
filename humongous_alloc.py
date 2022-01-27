@@ -45,40 +45,40 @@ def parse_file(file):
 
 def print_results(allocations):
     # Aggregate allocations by 50% G1 region size
-    humongous_object_512kb = 0
-    humongous_object_1mb = 0
-    humongous_object_2mb = 0
-    humongous_object_4mb = 0
-    humongous_object_8mb = 0
-    humongous_object_16mb = 0
-    humongous_object_gt16mb = 0
+    allocation_512kb = 0
+    allocation_1mb = 0
+    allocation_2mb = 0
+    allocation_4mb = 0
+    allocation_8mb = 0
+    allocation_16mb = 0
+    allocation_gt16mb = 0
 
     for alloc in allocations:
         if alloc <= 524288:
-            humongous_object_512kb += 1
+            allocation_512kb += 1
         elif alloc <= 1048576:
-            humongous_object_1mb += 1
+            allocation_1mb += 1
         elif alloc <= 2097152:
-            humongous_object_2mb += 1
+            allocation_2mb += 1
         elif alloc <= 4194304:
-            humongous_object_4mb += 1
+            allocation_4mb += 1
         elif alloc <= 8388608:
-            humongous_object_8mb += 1
+            allocation_8mb += 1
         elif alloc <= 16777216:
-            humongous_object_16mb += 1
+            allocation_16mb += 1
         else:
-            humongous_object_gt16mb += 1
+            allocation_gt16mb += 1
 
     print('{0:<9} | {1:<9} | {2:<16} | {3:<}'.format("Heap Size", "G1 Region", "50% of G1 Region",
-                                                     "Humongous Allocations <= 50% G1 Region"))
-    print("---------------------------------------------------------------------------------")
-    print('{0:<9}   {1:<9}   {2:<16}   {3:<}'.format("<4GB", "1MB", "0.5MB", humongous_object_512kb))
-    print('{0:<9}   {1:<9}   {2:<16}   {3:<}'.format("<8GB", "2MB", "1MB", humongous_object_1mb))
-    print('{0:<9}   {1:<9}   {2:<16}   {3:<}'.format("<16GB", "4MB", "2MB", humongous_object_2mb))
-    print('{0:<9}   {1:<9}   {2:<16}   {3:<}'.format("<32GB", "8MB", "4MB", humongous_object_4mb))
-    print('{0:<9}   {1:<9}   {2:<16}   {3:<}'.format("<64GB", "16MB", "8MB", humongous_object_8mb))
-    print('{0:<9}   {1:<9}   {2:<16}   {3:<}'.format("64GB+", "32MB", "16MB", humongous_object_16mb))
-    print('\nNumber of Humongous Objects >16MB: {0}\n'.format(humongous_object_gt16mb))
+                                                     "Allocations <= 50% G1 Region"))
+    print("------------------------------------------------------------------------")
+    print('{0:<9}   {1:<9}   {2:<16}   {3:<}'.format("<4GB", "1MB", "0.5MB", allocation_512kb))
+    print('{0:<9}   {1:<9}   {2:<16}   {3:<}'.format("<8GB", "2MB", "1MB", allocation_1mb))
+    print('{0:<9}   {1:<9}   {2:<16}   {3:<}'.format("<16GB", "4MB", "2MB", allocation_2mb))
+    print('{0:<9}   {1:<9}   {2:<16}   {3:<}'.format("<32GB", "8MB", "4MB", allocation_4mb))
+    print('{0:<9}   {1:<9}   {2:<16}   {3:<}'.format("<64GB", "16MB", "8MB", allocation_8mb))
+    print('{0:<9}   {1:<9}   {2:<16}   {3:<}'.format("64GB+", "32MB", "16MB", allocation_16mb))
+    print('\nNumber of Allocations >16MB: {0}\n'.format(allocation_gt16mb))
 
     # Statistics
     if len(allocations) != 0:
@@ -89,12 +89,12 @@ def print_results(allocations):
         min_allocation = numpy.min(allocations)
         max_allocation = numpy.max(allocations)
 
-        print('Humongous Allocation Percentiles (bytes):\n\tp50 = {}\n\tp75 = {}\n\tp90 = {}\n\tp99 = {}'
+        print('Allocation Percentiles (bytes):\n\tp50 = {}\n\tp75 = {}\n\tp90 = {}\n\tp99 = {}'
               .format(p50, p75, p90, p99))
-        print('Min Humongous Allocation Size: {} bytes'.format(min_allocation))
-        print('Max Humongous Allocation Size: {} bytes'.format(max_allocation))
+        print('Min Allocation Size: {} bytes'.format(min_allocation))
+        print('Max Allocation Size: {} bytes'.format(max_allocation))
 
-    print('Total Humongous Allocation Count: {0}'.format(len(allocations)))
+    print('Total Allocation Count: {0}'.format(len(allocations)))
 
 
 if __name__ == "__main__":
