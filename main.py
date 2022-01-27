@@ -20,8 +20,9 @@ def main():
             # Split string and add allocation request size to list
             # Ignore 0 Byte allocations
             split_str = match_str.split(': ')
-            if int(split_str[1]) is not 0:
-                allocations.append(int(split_str[1]))
+            allocation = int(split_str[1])
+            if allocation != 0:
+                allocations.append(allocation)
 
     # Aggregate allocations by 50% G1 region size
     humongous_object_512kb = 0
@@ -57,20 +58,22 @@ def main():
     print('{0:<9}   {1:<9}   {2:<16}   {3:<}'.format("<32GB", "8MB", "4MB", humongous_object_4mb))
     print('{0:<9}   {1:<9}   {2:<16}   {3:<}'.format("<64GB", "16MB", "8MB", humongous_object_8mb))
     print('{0:<9}   {1:<9}   {2:<16}   {3:<}'.format("64GB+", "32MB", "16MB", humongous_object_16mb))
-    print('\nNumber of Humongous Objects >16MB: {0}'.format(humongous_object_gt16mb))
+    print('\nNumber of Humongous Objects >16MB: {0}\n'.format(humongous_object_gt16mb))
 
     # Statistics
-    p50 = numpy.percentile(allocations, 50)
-    p75 = numpy.percentile(allocations, 75)
-    p90 = numpy.percentile(allocations, 90)
-    p99 = numpy.percentile(allocations, 99)
-    min_allocation = numpy.min(allocations)
-    max_allocation = numpy.max(allocations)
+    if len(allocations) != 0:
+        p50 = numpy.percentile(allocations, 50)
+        p75 = numpy.percentile(allocations, 75)
+        p90 = numpy.percentile(allocations, 90)
+        p99 = numpy.percentile(allocations, 99)
+        min_allocation = numpy.min(allocations)
+        max_allocation = numpy.max(allocations)
 
-    print('\nHumongous Allocation Percentiles:\n\tp50 = {}\n\tp75 = {}\n\tp90 = {}\n\tp99 = {}'
-          .format(p50, p75, p90, p99))
-    print('Min Humongous Allocation Size: {}'.format(min_allocation))
-    print('Max Humongous Allocation Size: {}'.format(max_allocation))
+        print('Humongous Allocation Percentiles (bytes):\n\tp50 = {}\n\tp75 = {}\n\tp90 = {}\n\tp99 = {}'
+              .format(p50, p75, p90, p99))
+        print('Min Humongous Allocation Size: {} bytes'.format(min_allocation))
+        print('Max Humongous Allocation Size: {} bytes'.format(max_allocation))
+
     print('Total Humongous Allocation Count: {0}'.format(len(allocations)))
 
 
