@@ -1,17 +1,33 @@
+import argparse
+import os
 import re
 
 import numpy
 
 
 def main():
-    filename = "gc.log"
+    parser = argparse.ArgumentParser(description='Find humongous allocations in GC log files. JVM option '
+                                                 '-XX:+PrintAdaptiveSizePolicy is required.')
+    parser.add_argument('file', nargs='+', help='gc.log file')
+    args = parser.parse_args()
+
+    allocations = list()
+
+    for file in args.file:
+        if os.path.isfile(file):
+            allocations.extend(parse_file(file))
+
+    print_results(allocations)
+
+
+def parse_file(file):
     regex = "allocation request: ([0-9])+"
     allocations = list()
 
-    file = open(filename, "r")
+    open_file = open(file, "r")
 
     # Parse file for regex match
-    for line in file:
+    for line in open_file:
         match = re.search(regex, line)
 
         if match is not None:
@@ -24,6 +40,10 @@ def main():
             if allocation != 0:
                 allocations.append(allocation)
 
+    return allocations
+
+
+def print_results(allocations):
     # Aggregate allocations by 50% G1 region size
     humongous_object_512kb = 0
     humongous_object_1mb = 0
